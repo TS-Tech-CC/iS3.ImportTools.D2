@@ -1,0 +1,35 @@
+﻿<Window x:Class="iS3.ImportTools.D2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:iS3.ImportTools.D2"
+        mc:Ignorable="d"
+        Title="CAD导入工具" Height="500" Width="1000">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
+                    HorizontalAlignment="Left" Orientation="Horizontal">
+            <Button Margin="5" Content="请选择要打开的CAD文件（.dwg）" Width="200" 
+                    Name="InputFileBtn" Click="InputFileBtn_Click"></Button>
+            <TextBlock Name="InputFileNameTB" Width="300" />
+        </StackPanel>
+        <Grid Grid.Row="1" Grid.Column="0">
+            <ListBox Name="layerLB" SelectionChanged="layerLB_SelectionChanged">
+                
+            </ListBox>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <ListBox Name="PropertyDG">
+                
+            </ListBox>
+        </Grid>
+    </Grid>
+</Window>
