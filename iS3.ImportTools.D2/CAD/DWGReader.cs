@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OSGeo.OGR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,12 +11,13 @@ namespace iS3.ImportTools.D2.CAD
 {
     public class DWGReader
     {
-        public static List<string> ReadPropertyFromFile(string inputfilename,string layerName)
+        public static Tuple<List<string>,List<Geometry>> ReadPropertyFromFile(string inputfilename,string layerName)
         {
             List<string> layerList = new List<string>();    //图层列表
             Database pDb;
             Transaction trans;
             List<string> result = new List<string>();
+            List<Geometry> resultGeo = new List<Geometry>();
             using (Services ser = new Services())
             {
                 using (pDb = new Database(false, false))//不加参数会出错                 
@@ -48,8 +50,12 @@ namespace iS3.ImportTools.D2.CAD
                             {
                                 case "DBPoint":
                                     DBPoint dbpoint = (DBPoint)obj;
+
+                                    OSGeo.OGR.Geometry point = new OSGeo.OGR.Geometry(wkbGeometryType.wkbPoint);
+                                    point.AddPoint(dbpoint.Position.X, dbpoint.Position.Y,0);
+                                    resultGeo.Add(point);
                                     if (dbpoint.Layer != layerName) break;
-                                   
+                                    result.Add(string.Format("Point---X:{0},T:{1}", dbpoint.Position.X, dbpoint.Position.Y));
                                     break;
                                 case "Line":
                                     Line line = (Line)obj;
@@ -70,6 +76,8 @@ namespace iS3.ImportTools.D2.CAD
                                 #endregion
                                 case "Circle":
                                     Circle circle = (Circle)obj;
+
+
                                     if (circle.Layer != layerName) break;
                                     result.Add(string.Format("Circle---centerX:{0},centerY:{1},radius:{2}", circle.Center.X, circle.Center.Y, circle.Radius));
                                     //result.Add(circle);
@@ -99,7 +107,7 @@ namespace iS3.ImportTools.D2.CAD
                     }
                 }
             }
-            return result;
+            return new Tuple<List<string>, List<Geometry>>(result,resultGeo);
         }
         
         public static List<string> ReadLayerFromFile(string inputfilename)

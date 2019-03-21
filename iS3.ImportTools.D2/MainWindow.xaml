@@ -19,7 +19,10 @@
                     HorizontalAlignment="Left" Orientation="Horizontal">
             <Button Margin="5" Content="请选择要打开的CAD文件（.dwg）" Width="200" 
                     Name="InputFileBtn" Click="InputFileBtn_Click"></Button>
+            
             <TextBlock Name="InputFileNameTB" Width="300" />
+            <Button Content="导出选中图层" Name="ExportBtn" Click="ExportBtn_Click"/>
+            <TextBox Name="ExportFileNameTB" Width="300" />
         </StackPanel>
         <Grid Grid.Row="1" Grid.Column="0">
             <ListBox Name="layerLB" SelectionChanged="layerLB_SelectionChanged">

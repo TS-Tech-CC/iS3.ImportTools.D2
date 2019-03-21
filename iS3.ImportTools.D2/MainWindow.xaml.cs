@@ -1,4 +1,6 @@
 ﻿using iS3.ImportTools.D2.CAD;
+using iS3.ImportTools.D2.Shp;
+using OSGeo.GDAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,8 +27,17 @@ namespace iS3.ImportTools.D2
         public MainWindow()
         {
             InitializeComponent();
+
+
+            //注册GDAL
+            GdalConfiguration.ConfigureGdal();
+
+            GdalConfiguration.ConfigureOgr();
+            Gdal.AllRegister();
         }
         string selectFileName;
+        string selectLayerName;
+        List<OSGeo.OGR.Geometry> resultGeo;
         //选择要打开的CAD文件
         private void InputFileBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -47,12 +58,23 @@ namespace iS3.ImportTools.D2
             }
         }
 
+       
         //点击查看图层内属性
         private void layerLB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selectLayerName = layerLB.SelectedItem as string;
-            List<string> result= DWGReader.ReadPropertyFromFile(selectFileName, selectLayerName);
-            PropertyDG.ItemsSource = result;
+            selectLayerName = layerLB.SelectedItem as string;
+            var result = DWGReader.ReadPropertyFromFile(selectFileName, selectLayerName);
+            List<string> resultList= result.Item1;
+            resultGeo = result.Item2;
+            PropertyDG.ItemsSource = resultList;
+        }
+
+        //导出
+        private void ExportBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string exportFile = ExportFileNameTB.Text;
+            ShpEditor editor = new ShpEditor(exportFile);
+            editor.CreateShp(selectLayerName, resultGeo);
         }
     }
 }
